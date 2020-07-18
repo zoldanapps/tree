@@ -12,54 +12,69 @@ namespace Tree
     {
         private static TreeManager _treeManager = new TreeManager();
         private static int _rootDepth;
-        private static int _maxDepth = 3;
+        private static int _maxDepth;
+        private static SortOrder _sortOrder = SortOrder.Ascending;
+        private static OrderBy _orderBy = OrderBy.Name;
+
+
         private const int GB = 1024 * 1024 * 1024;
         private const int MB = 1024 * 1024;
         private const int KB = 1024;
 
-
-
-        private static Node _node = new Node();
-
-
         static void Main(string[] args)
         {
-            bool isHumanReadable = false;
-            //if (args.Length > 0 )
-            //{
-            //    string arg = args.FirstOrDefault(a => a == "-h" || a == "--human-readable");
-            //    if (arg != null)
-            //        isHumanReadable = true;
-            //    arg = args.FirstOrDefault(a => a == "-d" || a == "--depth");
+            bool isHumanReadable;
+            bool isShowSize;
 
-            //    arg = args.FirstOrDefault(a => a == "-h" || a == "--human-readable");
-            //    if (arg != null)
-            //    {
-            //        string[] option = arg.Split('=');
-            //        if ()
-            //    }
+            try
+            {
+                // парсим переданные параметры
+                OptionsParser optionsParser = new OptionsParser();
+                optionsParser.Parse(args);
+                isHumanReadable = optionsParser.GetOptionAsBool("h", "human-readable");
+                isShowSize = optionsParser.GetOptionAsBool("s", "size");
+                _maxDepth = optionsParser.GetOptionAsInt("d", "depth", -1);
+                _sortOrder = optionsParser.GetOptionAsBool("do", "descending-order") == false ? SortOrder.Ascending : SortOrder.Descending;
+                if (optionsParser.GetOptionAsBool("oc", "order-by-creation-date") == true)                
+                    _orderBy =  OrderBy.CreateDate;
+                if (optionsParser.GetOptionAsBool("os", "order-by-size") == true)
+                    _orderBy = OrderBy.Size;
+                if (optionsParser.GetOptionAsBool("om", "order-by-modefy-date") == true)
+                    _orderBy = OrderBy.ModifyDate;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return;
+            }
 
-            //}
 
             string rootDirectory = @"d:\TMP\root";
             _rootDepth = GetDepth(rootDirectory);
-            
 
-            //_treeManager.SetRootFolder(rootDirectory);
-            //_treeManager.ShowRootNode();            
-            ShowTree(rootDirectory, _node, false, isHumanReadable);
-            _treeManager.PrintNode(_node);
+            Node treeNode = CreateTreeNode(rootDirectory, isShowSize, isHumanReadable);            
+            _treeManager.PrintNode(treeNode);
             Console.ReadKey();
         }
 
 
-        private static void ShowTree(string path, Node node, bool isShowSize, bool isHumanReadable)
+        private static Node CreateTreeNode(string path, bool isShowSize, bool isHumanReadable)
+        {
+            Node node = new Node();
+            CreateNode(path, node, isShowSize, isHumanReadable);
+            return node;
+        }
+
+        private static void CreateNode(string path, Node node, bool isShowSize, bool isHumanReadable)
         {
             int depth = GetDepth(path) - _rootDepth;
+
             DirectoryInfo directoryInfo = new DirectoryInfo(path);
             node.Name = directoryInfo.Name;
-            FileInfo[] fileInfo = directoryInfo.GetFiles();
-            foreach (FileInfo file in fileInfo)
+
+            var files = SortFileList(directoryInfo.GetFiles());            
+            
+            foreach (FileInfo file in files)
             {
                 Node fileNode = new Node();
                 if (isShowSize)
@@ -70,24 +85,44 @@ namespace Tree
                 {
                     fileNode.Name = file.Name;
                 }
-                node.Children.Add(fileNode);                
-        }
-    
-            //_treeManager.PrintNode(directoryInfo.Name, depth);
+                node.Children.Add(fileNode);
+            }            
             if (depth == _maxDepth)
-                return;      
-            
-            
-            DirectoryInfo[] dirs = directoryInfo.GetDirectories();
-            
-           ////   //_treeLevel++;
+                return;
+
+            var dirs = SortFolderList(directoryInfo.GetDirectories());            
             foreach (DirectoryInfo dir in dirs)
             {
-                Node n = new Node();                
-                node.Children.Add(n);           
-                ShowTree(dir.FullName, n, isShowSize, isHumanReadable);
+                Node childrenNode = new Node();
+                node.Children.Add(childrenNode);
+                CreateNode(dir.FullName, childrenNode, isShowSize, isHumanReadable);
             }
         }
+
+
+        private static IOrderedEnumerable<FileInfo> SortFileList(FileInfo[] files)
+        {
+            if ( _orderBy == OrderBy.Size)            
+                return _sortOrder == SortOrder.Ascending ? files.OrderBy(f => f.Length) : files.OrderByDescending(f => f.Length);
+            
+            if (_orderBy == OrderBy.CreateDate)
+                return _sortOrder == SortOrder.Ascending ? files.OrderBy(f => f.CreationTime) : files.OrderByDescending(f => f.CreationTime);
+
+            if (_orderBy == OrderBy.ModifyDate)
+                return _sortOrder == SortOrder.Ascending ? files.OrderBy(f => f.LastAccessTime) : files.OrderByDescending(f => f.LastAccessTime);
+            return _sortOrder == SortOrder.Ascending ? files.OrderBy(f => f.Name) : files.OrderByDescending(f => f.Name);
+
+        }       
+
+        private static IOrderedEnumerable<DirectoryInfo> SortFolderList(DirectoryInfo[] folders)
+        {
+            if (_orderBy == OrderBy.CreateDate)
+                return _sortOrder == SortOrder.Ascending ? folders.OrderBy(d => d.CreationTime) : folders.OrderByDescending(d => d.CreationTime);
+
+            if (_orderBy == OrderBy.ModifyDate)
+                return _sortOrder == SortOrder.Ascending ? folders.OrderBy(d => d.LastAccessTime) : folders.OrderByDescending(d => d.LastAccessTime);
+            return _sortOrder == SortOrder.Ascending ? folders.OrderBy(f => f.Name) : folders.OrderByDescending(f => f.Name);
+        }       
 
         private static int GetDepth(string path)
         {
@@ -123,18 +158,6 @@ namespace Tree
                 result = fileLength.ToString() + " B";
 
             return $"({result})";
-        }
-
-        
-
-        private static void ViewNode(string name)
-        {
-            Console.WriteLine($"+{name}");
-        }
-
-        private static void Shift()
-        {
-            Console.WriteLine($"  |");            
-        }
+        }     
     }
 }

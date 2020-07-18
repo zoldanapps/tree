@@ -16,11 +16,11 @@ namespace Tree
         /// <param name="shortName">Короткое имя опции</param>
         /// <param name="name">Полное имя опции</param>
         /// <returns>Возвращает значение опции как целое</returns>
-        public int GetOptionAsInt(string shortName, string name)
+        public int GetOptionAsInt(string shortName, string name, int defaultValue = 0)
         {
             Option option = _options.FirstOrDefault(o => o.Name == name || o.Name == shortName);
             if (option == null)
-                throw new ArgumentNullException($"Не найден ожидаемый параметр {shortName} или {name}");
+                return defaultValue;
             try
             {
                 int result = int.Parse(option.Value);
@@ -42,9 +42,7 @@ namespace Tree
         public string GetOptionAsString(string shortName, string name)
         {
             Option option = _options.FirstOrDefault(o => o.Name == name || o.Name == shortName);
-            if (option == null)
-                throw new ArgumentNullException($"Не найден ожидаемый параметр {shortName} или {name}");            
-                return option.Value;                            
+            return option == null ? string.Empty : option.Value;            
         }
 
 
