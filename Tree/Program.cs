@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tree.Models;
 
 namespace Tree
 {
@@ -24,21 +25,21 @@ namespace Tree
         static void Main(string[] args)
         {
             bool isHumanReadable = false;
-            if (args.Length > 0 )
-            {
-                string arg = args.FirstOrDefault(a => a == "-h" || a == "--human-readable");
-                if (arg != null)
-                    isHumanReadable = true;
-                arg = args.FirstOrDefault(a => a == "-d" || a == "--depth");
+            //if (args.Length > 0 )
+            //{
+            //    string arg = args.FirstOrDefault(a => a == "-h" || a == "--human-readable");
+            //    if (arg != null)
+            //        isHumanReadable = true;
+            //    arg = args.FirstOrDefault(a => a == "-d" || a == "--depth");
 
-                arg = args.FirstOrDefault(a => a == "-h" || a == "--human-readable");
-                if (arg != null)
-                {
-                    string[] option = arg.Split('=');
-                    if ()
-                }
+            //    arg = args.FirstOrDefault(a => a == "-h" || a == "--human-readable");
+            //    if (arg != null)
+            //    {
+            //        string[] option = arg.Split('=');
+            //        if ()
+            //    }
 
-            }
+            //}
 
             string rootDirectory = @"d:\TMP\root";
             _rootDepth = GetDepth(rootDirectory);
