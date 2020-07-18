@@ -12,7 +12,12 @@ namespace Tree
         private const string _space = "   ";     
 
 
-        public void PrintNode(Node node, string indent = "")
+        public void PrintNodes(Node node)
+        {
+            PrintNode(node);
+        }
+
+        private void PrintNode(Node node, string indent = "")
         {
             Console.WriteLine(node.Name);
            
@@ -25,7 +30,7 @@ namespace Tree
             }
         }
 
-        public void PrintChildNode(Node node, string indent, bool isLast)
+        private void PrintChildNode(Node node, string indent, bool isLast)
         {            
             Console.Write(indent);
          
@@ -41,10 +46,6 @@ namespace Tree
             }
 
             PrintNode(node, indent);
-        }
-
-
-
-       
+        }       
     }
 }

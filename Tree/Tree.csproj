@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="Models\OrderBy.cs" />
     <Compile Include="Models\SortOrder.cs" />
+    <Compile Include="NodeCreator.cs" />
     <Compile Include="OptionsParser.cs" />
     <Compile Include="Models\Node.cs" />
     <Compile Include="Models\Option.cs" />
