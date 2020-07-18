@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Tree.Models;
 
 namespace Tree
 {
-    public class TreeManager
+    public class TreeView
     {        
 
         private const string _cross = " ├─";

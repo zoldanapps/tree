@@ -10,7 +10,7 @@ namespace Tree
 {
     class Program
     {
-        private static TreeManager _treeManager = new TreeManager();
+        private static TreeView _treeManager = new TreeView();
         private static int _rootDepth;
         private static int _maxDepth;
         private static SortOrder _sortOrder = SortOrder.Ascending;
@@ -128,8 +128,6 @@ namespace Tree
         {
             return path.Count(s => s.Equals('\\'));
         }
-
-
 
         private static string GetReadableLength(decimal fileLength)
         {
