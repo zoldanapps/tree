@@ -68,6 +68,7 @@ namespace Tree
         {
             return path.Count(s => s.Equals('\\'));
         }
+
         private IOrderedEnumerable<FileInfo> SortFileList(FileInfo[] files)
         {
             if (_settings.OrderBy == OrderBy.Size)

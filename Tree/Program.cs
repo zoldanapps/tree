@@ -12,7 +12,7 @@ namespace Tree
 
             try
             {
-                // парсим переданные параметры                
+                // парсим переданые параметры                
                 settings.Init(args);
             }
             catch (Exception e)
