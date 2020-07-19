@@ -6,10 +6,10 @@ namespace Tree
     public class TreeView
     {        
 
-        private const string _cross = " ├─";
-        private const string _corner = " └─";
-        private const string _vertical = " │ ";
-        private const string _space = "   ";     
+        private const string Cross = " ├─";
+        private const string Corner = " └─";
+        private const string Vertical = " │ ";
+        private const string Space = "   ";     
 
 
         public void PrintNodes(Node node)
@@ -36,13 +36,13 @@ namespace Tree
          
             if (isLast)
             {
-                Console.Write(_corner);
-                indent += _space;
+                Console.Write(Corner);
+                indent += Space;
             }
             else
             {
-                Console.Write(_cross);
-                indent += _vertical;
+                Console.Write(Cross);
+                indent += Vertical;
             }
 
             PrintNode(node, indent);
