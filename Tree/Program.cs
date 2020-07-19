@@ -7,25 +7,25 @@ namespace Tree
     {      
 
         static void Main(string[] args)
-        {
-            NodeCreator nodeCreator = new NodeCreator();
-            TreeView treeView = new TreeView();
-            
+        {            
+            Settings settings = new Settings();
+
             try
             {
                 // парсим переданные параметры
-                OptionsParser optionsParser = new OptionsParser();
-                optionsParser.Parse(args);
-                nodeCreator.IsHumanReadable = optionsParser.GetOptionAsBool("h", "human-readable");
-                nodeCreator.IsShowSize = optionsParser.GetOptionAsBool("s", "size");
-                nodeCreator.Depth = optionsParser.GetOptionAsInt("d", "depth", -1);
-                nodeCreator.SortOrder = optionsParser.GetOptionAsBool("do", "descending-order") == false ? SortOrder.Ascending : SortOrder.Descending;
-                if (optionsParser.GetOptionAsBool("oc", "order-by-creation-date") == true)
-                    nodeCreator.OrderBy =  OrderBy.CreateDate;
-                if (optionsParser.GetOptionAsBool("os", "order-by-size") == true)
-                    nodeCreator.OrderBy = OrderBy.Size;
-                if (optionsParser.GetOptionAsBool("om", "order-by-modefy-date") == true)
-                    nodeCreator.OrderBy = OrderBy.ModifyDate;
+                
+                settings.Init(args);
+
+                //nodeCreator.IsHumanReadable = settings.GetOptionAsBool("h", "human-readable");
+                //nodeCreator.IsShowSize = settings.GetOptionAsBool("s", "size");
+                //nodeCreator.Depth = settings.GetOptionAsInt("d", "depth", -1);
+                //nodeCreator.SortOrder = settings.GetOptionAsBool("do", "descending-order") == false ? SortOrder.Ascending : SortOrder.Descending;
+                //if (settings.GetOptionAsBool("oc", "order-by-creation-date") == true)
+                //    nodeCreator.OrderBy =  OrderBy.CreateDate;
+                //if (settings.GetOptionAsBool("os", "order-by-size") == true)
+                //    nodeCreator.OrderBy = OrderBy.Size;
+                //if (settings.GetOptionAsBool("om", "order-by-modefy-date") == true)
+                //    nodeCreator.OrderBy = OrderBy.ModifyDate;
             }
             catch (Exception e)
             {
@@ -33,21 +33,32 @@ namespace Tree
                 return;
             }
 
-            string rootDirectory = Environment.CurrentDirectory;
-            Node rootNode = nodeCreator.CreateTreeNode(rootDirectory);
+            if (settings.ShowHelp)
+            {
+                ShowHelp();
+                return;
+            }
+            NodeCreator nodeCreator = new NodeCreator(settings);
+            TreeView treeView = new TreeView();            
+            Node rootNode = nodeCreator.CreateTreeNode();
             treeView.PrintNodes(rootNode);            
         }
 
-
-        
-
-        
-
-
-        
-
-       
-
+        private static void ShowHelp()
+        {
+            Console.WriteLine("Отображение дерева папок.");
+            Console.WriteLine("Tree [Путь к папке] [Опции]");
+            Console.WriteLine("Путь к папке - корневая папка откуда будет строится дерево. Если путь не задан, то берется текущая директория. ");
+            Console.WriteLine("Опции:");
+            Console.WriteLine("-s или --size Отображать размер файлов");
+            Console.WriteLine("-h или --human-readable Отображать размер файлов в удобном виде");
+            Console.WriteLine("-d или --depth Задает глубину просмотра директорий");
+            Console.WriteLine("-do Задает напрвление сортировки. Если флаг указан, то сортировка идет в обратном порядке");
+            Console.WriteLine("-os Сортировать файлы по размеру");
+            Console.WriteLine("-oс Сортировать файлы и папки по дате создания");
+            Console.WriteLine("-om Сортировать файлы и папки по дате модификации");
+            Console.WriteLine("-? или --help Вывод справки о программе");
+        }
        
     }
 }

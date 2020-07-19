@@ -10,14 +10,16 @@ namespace TreeTest
         [TestMethod]
         public void ParserTest()
         {
-           string[] args = { "--depth=3", "-s", "--human-readable",};
+            string rootFolder = "C:/Windows/Temp";
+           string[] args = {rootFolder , "--depth=3", "-s", "--human-readable"};
 
-            OptionsParser optionsParser = new OptionsParser();            
-            optionsParser.Parse(args);
+            Settings optionsParser = new Settings();            
+            optionsParser.Init(args);
 
-            Assert.IsTrue(optionsParser.GetOptionAsBool("s", "size"));
-            Assert.IsTrue(optionsParser.GetOptionAsBool("h", "human-readable"));
-            Assert.IsTrue(optionsParser.GetOptionAsInt("d", "depth") == 3);
+            Assert.IsTrue(optionsParser.ShowSize);
+            Assert.IsTrue(optionsParser.HumanReadable);
+            Assert.IsTrue(optionsParser.Depth == 3);
+            Assert.IsTrue(optionsParser.RootFolder == rootFolder);
 
         }
     }

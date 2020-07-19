@@ -12,23 +12,21 @@ namespace Tree
         private const int MB = 1024 * 1024;
         private const int KB = 1024;
 
+        private readonly Settings _settings;
         private int _rootDepth;
 
-        public int Depth { get; set; }
+       
 
-        public SortOrder SortOrder { get; set; } = SortOrder.Ascending;
-
-        public OrderBy OrderBy { get; set; } = OrderBy.Name;
-
-        public bool IsShowSize { get; set; }
-
-        public bool IsHumanReadable { get; set; }
-
-        public Node CreateTreeNode (string rootDirectory)
+        public NodeCreator(Settings settigs)
         {
-            _rootDepth = GetDepth(rootDirectory);
+            _settings = settigs;
+        }
+
+        public Node CreateTreeNode ()
+        {
+            _rootDepth = GetDepth(_settings.RootFolder);
             Node node = new Node();
-            CreateNode(rootDirectory, node);
+            CreateNode(_settings.RootFolder, node);
             return node;
         }
 
@@ -44,9 +42,9 @@ namespace Tree
             foreach (FileInfo file in files)
             {
                 Node fileNode = new Node();
-                if (IsShowSize)
+                if (_settings.ShowSize)
                 {
-                    fileNode.Name = IsHumanReadable ? $"{file.Name} {GetReadableLength(file.Length)}" : $"{file.Name} ({file.Length} B)";
+                    fileNode.Name = _settings.HumanReadable ? $"{file.Name} {GetReadableLength(file.Length)}" : $"{file.Name} ({file.Length} B)";
                 }
                 else
                 {
@@ -54,7 +52,7 @@ namespace Tree
                 }
                 node.Children.Add(fileNode);
             }
-            if (depth == Depth)
+            if (depth == _settings.Depth)
                 return;
 
             var dirs = SortFolderList(directoryInfo.GetDirectories());
@@ -72,26 +70,26 @@ namespace Tree
         }
         private IOrderedEnumerable<FileInfo> SortFileList(FileInfo[] files)
         {
-            if (OrderBy == OrderBy.Size)
-                return SortOrder == SortOrder.Ascending ? files.OrderBy(f => f.Length) : files.OrderByDescending(f => f.Length);
+            if (_settings.OrderBy == OrderBy.Size)
+                return _settings.SortOrder == SortOrder.Ascending ? files.OrderBy(f => f.Length) : files.OrderByDescending(f => f.Length);
 
-            if (OrderBy == OrderBy.CreateDate)
-                return SortOrder == SortOrder.Ascending ? files.OrderBy(f => f.CreationTime) : files.OrderByDescending(f => f.CreationTime);
+            if (_settings.OrderBy == OrderBy.CreateDate)
+                return _settings.SortOrder == SortOrder.Ascending ? files.OrderBy(f => f.CreationTime) : files.OrderByDescending(f => f.CreationTime);
 
-            if (OrderBy == OrderBy.ModifyDate)
-                return SortOrder == SortOrder.Ascending ? files.OrderBy(f => f.LastAccessTime) : files.OrderByDescending(f => f.LastAccessTime);
-            return SortOrder == SortOrder.Ascending ? files.OrderBy(f => f.Name) : files.OrderByDescending(f => f.Name);
+            if (_settings.OrderBy == OrderBy.ModifyDate)
+                return _settings.SortOrder == SortOrder.Ascending ? files.OrderBy(f => f.LastAccessTime) : files.OrderByDescending(f => f.LastAccessTime);
+            return _settings.SortOrder == SortOrder.Ascending ? files.OrderBy(f => f.Name) : files.OrderByDescending(f => f.Name);
 
         }
 
         private IOrderedEnumerable<DirectoryInfo> SortFolderList(DirectoryInfo[] folders)
         {
-            if (OrderBy == OrderBy.CreateDate)
-                return SortOrder == SortOrder.Ascending ? folders.OrderBy(d => d.CreationTime) : folders.OrderByDescending(d => d.CreationTime);
+            if (_settings.OrderBy == OrderBy.CreateDate)
+                return _settings.SortOrder == SortOrder.Ascending ? folders.OrderBy(d => d.CreationTime) : folders.OrderByDescending(d => d.CreationTime);
 
-            if (OrderBy == OrderBy.ModifyDate)
-                return SortOrder == SortOrder.Ascending ? folders.OrderBy(d => d.LastAccessTime) : folders.OrderByDescending(d => d.LastAccessTime);
-            return SortOrder == SortOrder.Ascending ? folders.OrderBy(f => f.Name) : folders.OrderByDescending(f => f.Name);
+            if (_settings.OrderBy == OrderBy.ModifyDate)
+                return _settings.SortOrder == SortOrder.Ascending ? folders.OrderBy(d => d.LastAccessTime) : folders.OrderByDescending(d => d.LastAccessTime);
+            return _settings.SortOrder == SortOrder.Ascending ? folders.OrderBy(f => f.Name) : folders.OrderByDescending(f => f.Name);
         }
 
         private string GetReadableLength(decimal fileLength)
