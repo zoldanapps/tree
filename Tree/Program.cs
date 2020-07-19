@@ -12,20 +12,8 @@ namespace Tree
 
             try
             {
-                // парсим переданные параметры
-                
+                // парсим переданные параметры                
                 settings.Init(args);
-
-                //nodeCreator.IsHumanReadable = settings.GetOptionAsBool("h", "human-readable");
-                //nodeCreator.IsShowSize = settings.GetOptionAsBool("s", "size");
-                //nodeCreator.Depth = settings.GetOptionAsInt("d", "depth", -1);
-                //nodeCreator.SortOrder = settings.GetOptionAsBool("do", "descending-order") == false ? SortOrder.Ascending : SortOrder.Descending;
-                //if (settings.GetOptionAsBool("oc", "order-by-creation-date") == true)
-                //    nodeCreator.OrderBy =  OrderBy.CreateDate;
-                //if (settings.GetOptionAsBool("os", "order-by-size") == true)
-                //    nodeCreator.OrderBy = OrderBy.Size;
-                //if (settings.GetOptionAsBool("om", "order-by-modefy-date") == true)
-                //    nodeCreator.OrderBy = OrderBy.ModifyDate;
             }
             catch (Exception e)
             {

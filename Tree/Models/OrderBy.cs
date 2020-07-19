@@ -1,16 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace Tree.Models
 {
+    /// <summary>
+    /// Сортировка
+    /// </summary>
     public enum OrderBy
     {
+        /// <summary>
+        /// по имени
+        /// </summary>
         Name,
+
+        /// <summary>
+        /// по дате создания
+        /// </summary>
         CreateDate,
+
+        /// <summary>
+        /// по дате модификации
+        /// </summary>
         ModifyDate,
+
+        /// <summary>
+        /// по размеру
+        /// </summary>
         Size
     }
 }
